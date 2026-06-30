@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/seed-system/capability-index.schema.json",
+  "title": "Capability Index",
+  "type": "object",
+  "required": ["purpose", "sections"],
+  "properties": {
+    "purpose": {"type": "string"},
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "layer", "entrypoints"],
+        "properties": {
+          "name": {"type": "string"},
+          "layer": {"type": "string"},
+          "entrypoints": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

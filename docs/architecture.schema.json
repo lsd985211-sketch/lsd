@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/seed-system/architecture.schema.json",
+  "title": "Seed System Public Architecture Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "layers", "shared_rules", "maintenance_contract", "capability_index", "growth_model", "agent_primitives", "tool_knowledge", "canonical_public_artifacts"],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "description": "Path or identifier for the schema source."
+    },
+    "version": {
+      "type": "string",
+      "description": "Contract version."
+    },
+    "layers": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "purpose", "responsibilities"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": ["iteration", "resource", "maintenance", "tool"]
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "responsibilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "shared_rules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "maintenance_contract": {
+      "type": "object"
+    },
+    "capability_index": {
+      "type": "object"
+    },
+    "growth_model": {
+      "type": "object"
+    },
+    "agent_primitives": {
+      "type": "object"
+    },
+    "tool_knowledge": {
+      "type": "object"
+    },
+    "canonical_public_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

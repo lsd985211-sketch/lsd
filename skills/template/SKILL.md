@@ -26,3 +26,12 @@ Describe the expected artifact or action.
 ## Notes
 
 Use this template as a starting point for public, reusable skill documentation.
+
+## Layer Mapping
+
+State which layer the skill belongs to:
+
+- iteration
+- resource
+- maintenance
+- tool

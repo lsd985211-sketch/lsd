@@ -17,3 +17,7 @@ Use when publishing a new version or summarizing a release.
 ## Safety
 
 Keep release notes user-facing and free of private paths or tokens.
+
+## Layer
+
+iteration

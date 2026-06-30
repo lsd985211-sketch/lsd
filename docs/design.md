@@ -18,6 +18,8 @@ The seed system gives a new agent session a compact, read-only bootstrap pack fo
 3. Drift-prone facts must be verified live by the consumer.
 4. Config values are sanitized before output.
 5. Optional command checks only run in a deliberately expanded diagnostic mode.
+6. Public layering is explicit: iteration, resource, maintenance, and tool.
+7. Maintenance and repair planning stay separate from payload generation.
 
 ## Suggested Workspace Layout
 

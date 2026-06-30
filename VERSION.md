@@ -1,6 +1,6 @@
 # Versioning
 
-Current version: `0.1.0`
+Current version: `1.0.0`
 
 ## Policy
 

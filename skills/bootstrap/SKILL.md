@@ -18,3 +18,7 @@ Use when a fresh session needs workspace rules, checkpoint baselines, and saniti
 - Read-only by default.
 - Sanitize config and secrets.
 - Report missing files instead of failing hard.
+
+## Layer
+
+resource + tool

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/seed-system/tool-catalog.schema.json",
+  "title": "Tool Catalog",
+  "type": "object",
+  "required": ["version", "tools"],
+  "properties": {
+    "version": {"type": "string"},
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "purpose", "safety_level", "read_only"],
+        "properties": {
+          "name": {"type": "string"},
+          "purpose": {"type": "string"},
+          "safety_level": {"type": "string"},
+          "read_only": {"type": "boolean"},
+          "input_schema": {"type": "object"},
+          "output_shape": {"type": "string"},
+          "verification": {"type": "string"},
+          "fallback": {"type": "string"}
+        }
+      }
+    }
+  }
+}

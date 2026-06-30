@@ -2,30 +2,842 @@
   "ok": true,
   "tool": {
     "name": "seed_system.bootstrap_context",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "schema": "bootstrap-pack-v1"
   },
-  "generated_at": "2026-06-30T00:00:00+00:00",
+  "generated_at": "2026-06-30T09:13:10.007692+00:00",
   "workspace": "/path/to/workspace",
   "project_id": "example-project",
   "task": "prepare new agent handoff",
   "depth": "quick",
   "rules": {
-    "agents_md_exists": true,
+    "agents_md_exists": false,
+    "agents_md_path": "/path/to/workspace\\AGENTS.md",
+    "agents_md_snippet": "",
     "default_first_moves": [
       "Read local project instructions before editing.",
-      "Treat memories and checkpoints as hints until live evidence confirms them."
+      "Treat memories and checkpoints as hints until live evidence confirms them.",
+      "Verify drift-prone state such as ports, services, permissions, and tools before acting."
     ]
   },
+  "architecture": {
+    "schema": "docs/architecture.schema.json",
+    "version": "1.0.0",
+    "layers": [
+      {
+        "name": "iteration",
+        "purpose": "Versioned evolution, release boundaries, and compatibility policy.",
+        "responsibilities": [
+          "Version changes",
+          "Release notes",
+          "Compatibility boundaries",
+          "Rollback guidance"
+        ]
+      },
+      {
+        "name": "resource",
+        "purpose": "Workspace discovery and sanitized context extraction.",
+        "responsibilities": [
+          "Workspace discovery",
+          "Checkpoint manifests",
+          "Project knowledge summaries",
+          "Sanitized config snapshots"
+        ]
+      },
+      {
+        "name": "maintenance",
+        "purpose": "Diagnostics, validation, and repair planning.",
+        "responsibilities": [
+          "Read-only diagnostics",
+          "Validation profiles",
+          "Drift reporting",
+          "Repair planning without mutation by default"
+        ]
+      },
+      {
+        "name": "tool",
+        "purpose": "Explicit command surfaces and read-only wrappers.",
+        "responsibilities": [
+          "Minimal command surfaces",
+          "MCP-style wrappers",
+          "Explicit input/output schemas",
+          "Read-only defaults"
+        ]
+      }
+    ],
+    "shared_rules": [
+      "Prefer public, reusable abstractions over private local paths.",
+      "Treat live environment facts as runtime evidence, not static memory.",
+      "Sanitize secrets and sensitive values before export.",
+      "Missing artifacts should be reported, not hidden.",
+      "Keep diagnostics and repair separate from business payloads."
+    ],
+    "maintenance_contract": {
+      "snapshot": {
+        "mode": "read-only",
+        "purpose": "Capture current state without mutating workspace or services.",
+        "outputs": [
+          "state summary",
+          "drift summary",
+          "risk summary"
+        ]
+      },
+      "doctor": {
+        "mode": "read-only",
+        "purpose": "Classify blockers, risks, advisories, and unknowns.",
+        "outputs": [
+          "blockers",
+          "risks",
+          "advisories",
+          "unknowns"
+        ]
+      },
+      "repair_plan": {
+        "mode": "dry-run by default",
+        "purpose": "Describe a repair without applying it.",
+        "outputs": [
+          "steps",
+          "blast radius",
+          "verification plan",
+          "rollback notes"
+        ]
+      },
+      "validate": {
+        "mode": "tiered",
+        "purpose": "Run quick or full validation against a known contract.",
+        "outputs": [
+          "pass/fail",
+          "mismatches",
+          "evidence"
+        ]
+      },
+      "metrics": {
+        "mode": "read-only",
+        "purpose": "Expose machine-readable health and usage counters.",
+        "outputs": [
+          "status counts",
+          "latency",
+          "failure rates",
+          "throughput hints"
+        ]
+      }
+    },
+    "capability_index": {
+      "purpose": "A machine-readable index of the public seed system capabilities.",
+      "sections": [
+        {
+          "name": "bootstrap",
+          "layer": "resource + tool",
+          "entrypoints": [
+            "seed_system.core.bootstrap_context:build_payload",
+            "seed_system.core.bootstrap_context:render_markdown",
+            "seed_system.core.project_kb_mcp:bootstrap_context_pack"
+          ]
+        },
+        {
+          "name": "architecture",
+          "layer": "iteration",
+          "entrypoints": [
+            "seed_system.core.architecture_contract:get_architecture_contract"
+          ]
+        },
+        {
+          "name": "maintenance",
+          "layer": "maintenance",
+          "entrypoints": [
+            "seed_system.core.project_kb_mcp:maintenance_contract"
+          ]
+        },
+        {
+          "name": "knowledge",
+          "layer": "resource",
+          "entrypoints": [
+            "seed_system.core.project_kb_mcp:kb_stats",
+            "seed_system.core.project_kb_mcp:kb_search"
+          ]
+        },
+        {
+          "name": "agent_capabilities",
+          "layer": "iteration + resource + maintenance + tool",
+          "entrypoints": [
+            "versioned evolution",
+            "sanitized workspace ingestion",
+            "read-only maintenance contracts",
+            "machine-readable capability discovery",
+            "MCP-style tool discovery",
+            "release drafting"
+          ]
+        }
+      ]
+    },
+    "growth_model": {
+      "purpose": "A reusable learning loop for helping a generic agent grow from this seed.",
+      "entrypoints": [
+        "observe",
+        "orient",
+        "act",
+        "verify",
+        "retain"
+      ],
+      "capabilities": [
+        "task decomposition",
+        "tool discipline",
+        "verification",
+        "knowledge retention",
+        "release hygiene"
+      ]
+    },
+    "agent_primitives": {
+      "purpose": "The most reusable generic primitives the seed teaches to a new agent.",
+      "groups": [
+        {
+          "name": "discovery",
+          "items": [
+            "read local instructions first",
+            "inspect the contract before acting",
+            "find the narrowest useful tool",
+            "distinguish stable docs from live evidence"
+          ]
+        },
+        {
+          "name": "execution",
+          "items": [
+            "make the smallest effective change",
+            "keep outputs structured",
+            "default to read-only",
+            "prefer reversible operations and backups"
+          ]
+        },
+        {
+          "name": "verification",
+          "items": [
+            "run a compile or schema check when available",
+            "compare example payloads with real outputs",
+            "treat drift-prone facts as live-only",
+            "separate verification from repair planning"
+          ]
+        },
+        {
+          "name": "retention",
+          "items": [
+            "promote reusable insights into the contract",
+            "keep examples aligned with canonical shapes",
+            "record versioned changes in release notes",
+            "avoid burying knowledge in ephemeral chat state"
+          ]
+        }
+      ]
+    },
+    "tool_knowledge": {
+      "purpose": "Reusable public tool habits and knowledge patterns.",
+      "entrypoints": [
+        "code_navigation",
+        "safe_editing",
+        "verification",
+        "source_verification",
+        "tool_discovery",
+        "browser_and_gui",
+        "git_and_release",
+        "memory_and_skills"
+      ],
+      "knowledge_types": [
+        "stable_contract",
+        "live_state",
+        "private_runtime",
+        "reusable_lesson"
+      ]
+    },
+    "canonical_public_artifacts": [
+      "VERSION.md",
+      "CHANGELOG.md",
+      "releases/<version>.md",
+      "docs/design.md",
+      "docs/origin.md",
+      "docs/architecture.md",
+      "docs/architecture.schema.json",
+      "seed_system/core/architecture_contract.py",
+      "seed_system/core/growth_model.py",
+      "seed_system/core/tool_knowledge.py",
+      "seed_system/core/bootstrap_context.py",
+      "seed_system/core/project_kb_mcp.py",
+      "skills/README.md",
+      "skills/template/SKILL.md",
+      "skills/bootstrap/SKILL.md",
+      "skills/release-notes/SKILL.md"
+    ]
+  },
+  "maintenance": {
+    "snapshot": {
+      "mode": "read-only",
+      "purpose": "Capture current state without mutating workspace or services.",
+      "outputs": [
+        "state summary",
+        "drift summary",
+        "risk summary"
+      ]
+    },
+    "doctor": {
+      "mode": "read-only",
+      "purpose": "Classify blockers, risks, advisories, and unknowns.",
+      "outputs": [
+        "blockers",
+        "risks",
+        "advisories",
+        "unknowns"
+      ]
+    },
+    "repair_plan": {
+      "mode": "dry-run by default",
+      "purpose": "Describe a repair without applying it.",
+      "outputs": [
+        "steps",
+        "blast radius",
+        "verification plan",
+        "rollback notes"
+      ]
+    },
+    "validate": {
+      "mode": "tiered",
+      "purpose": "Run quick or full validation against a known contract.",
+      "outputs": [
+        "pass/fail",
+        "mismatches",
+        "evidence"
+      ]
+    },
+    "metrics": {
+      "mode": "read-only",
+      "purpose": "Expose machine-readable health and usage counters.",
+      "outputs": [
+        "status counts",
+        "latency",
+        "failure rates",
+        "throughput hints"
+      ]
+    }
+  },
+  "capability_index": {
+    "purpose": "A machine-readable index of the public seed system capabilities.",
+    "sections": [
+      {
+        "name": "bootstrap",
+        "layer": "resource + tool",
+        "entrypoints": [
+          "seed_system.core.bootstrap_context:build_payload",
+          "seed_system.core.bootstrap_context:render_markdown",
+          "seed_system.core.project_kb_mcp:bootstrap_context_pack"
+        ]
+      },
+      {
+        "name": "architecture",
+        "layer": "iteration",
+        "entrypoints": [
+          "seed_system.core.architecture_contract:get_architecture_contract"
+        ]
+      },
+      {
+        "name": "maintenance",
+        "layer": "maintenance",
+        "entrypoints": [
+          "seed_system.core.project_kb_mcp:maintenance_contract"
+        ]
+      },
+      {
+        "name": "knowledge",
+        "layer": "resource",
+        "entrypoints": [
+          "seed_system.core.project_kb_mcp:kb_stats",
+          "seed_system.core.project_kb_mcp:kb_search"
+        ]
+      },
+      {
+        "name": "agent_capabilities",
+        "layer": "iteration + resource + maintenance + tool",
+        "entrypoints": [
+          "versioned evolution",
+          "sanitized workspace ingestion",
+          "read-only maintenance contracts",
+          "machine-readable capability discovery",
+          "MCP-style tool discovery",
+          "release drafting"
+        ]
+      }
+    ]
+  },
+  "growth_model": {
+    "purpose": "A reusable learning loop for helping a generic agent grow from this seed.",
+    "entrypoints": [
+      "observe",
+      "orient",
+      "act",
+      "verify",
+      "retain"
+    ],
+    "capabilities": [
+      "task decomposition",
+      "tool discipline",
+      "verification",
+      "knowledge retention",
+      "release hygiene"
+    ]
+  },
+  "agent_primitives": {
+    "purpose": "The most reusable generic primitives the seed teaches to a new agent.",
+    "groups": [
+      {
+        "name": "discovery",
+        "items": [
+          "read local instructions first",
+          "inspect the contract before acting",
+          "find the narrowest useful tool",
+          "distinguish stable docs from live evidence"
+        ]
+      },
+      {
+        "name": "execution",
+        "items": [
+          "make the smallest effective change",
+          "keep outputs structured",
+          "default to read-only",
+          "prefer reversible operations and backups"
+        ]
+      },
+      {
+        "name": "verification",
+        "items": [
+          "run a compile or schema check when available",
+          "compare example payloads with real outputs",
+          "treat drift-prone facts as live-only",
+          "separate verification from repair planning"
+        ]
+      },
+      {
+        "name": "retention",
+        "items": [
+          "promote reusable insights into the contract",
+          "keep examples aligned with canonical shapes",
+          "record versioned changes in release notes",
+          "avoid burying knowledge in ephemeral chat state"
+        ]
+      }
+    ]
+  },
+  "tool_knowledge": {
+    "version": "1.0.0",
+    "purpose": "Expose reusable tool habits and knowledge patterns without private local configuration.",
+    "tool_groups": [
+      {
+        "name": "code_navigation",
+        "use_for": [
+          "find symbols",
+          "trace callers",
+          "inspect blast radius",
+          "read relevant files"
+        ],
+        "principles": [
+          "Prefer structural indexes when available.",
+          "Use fast text search for broad discovery.",
+          "Read the smallest set of files that explains the change."
+        ]
+      },
+      {
+        "name": "safe_editing",
+        "use_for": [
+          "patch files",
+          "preserve user changes",
+          "keep edits scoped",
+          "support rollback"
+        ],
+        "principles": [
+          "Back up before local mutation when policy requires it.",
+          "Avoid unrelated refactors.",
+          "Prefer patch-style edits for reviewable changes."
+        ]
+      },
+      {
+        "name": "verification",
+        "use_for": [
+          "compile",
+          "schema check",
+          "smoke test",
+          "compare examples",
+          "validate contracts"
+        ],
+        "principles": [
+          "Verify the behavior touched by the change.",
+          "Use quick checks first, full checks when risk is higher.",
+          "Report unrun checks explicitly."
+        ]
+      },
+      {
+        "name": "source_verification",
+        "use_for": [
+          "current facts",
+          "libraries",
+          "standards",
+          "external systems",
+          "recommendations"
+        ],
+        "principles": [
+          "Use primary sources for technical facts.",
+          "Treat time-sensitive facts as unstable until checked.",
+          "Keep citations or evidence links when using external sources."
+        ]
+      },
+      {
+        "name": "tool_discovery",
+        "use_for": [
+          "find available MCP tools",
+          "check tool health",
+          "choose the smallest tool surface"
+        ],
+        "principles": [
+          "Discover tools before assuming they exist.",
+          "Prefer read-only tool calls for inspection.",
+          "Record unavailable tools as blockers or fallbacks."
+        ]
+      },
+      {
+        "name": "browser_and_gui",
+        "use_for": [
+          "visual verification",
+          "web app checks",
+          "manual-entry surfaces",
+          "screenshots"
+        ],
+        "principles": [
+          "Use HTTP checks when visual control is unavailable.",
+          "Use browser automation for rendered UI evidence.",
+          "Avoid brittle GUI automation when a direct API exists."
+        ]
+      },
+      {
+        "name": "git_and_release",
+        "use_for": [
+          "status review",
+          "diff review",
+          "versioning",
+          "release notes",
+          "remote sync"
+        ],
+        "principles": [
+          "Inspect working tree status before summarizing changes.",
+          "Keep release notes user-facing.",
+          "Do not commit backups or generated caches."
+        ]
+      },
+      {
+        "name": "memory_and_skills",
+        "use_for": [
+          "retain reusable lessons",
+          "author skills",
+          "align drifted skills",
+          "avoid context-only rules"
+        ],
+        "principles": [
+          "Promote durable lessons into explicit files.",
+          "Keep skills auditable and scoped.",
+          "Do not rely on chat context for system rules."
+        ]
+      }
+    ],
+    "knowledge_types": [
+      {
+        "name": "stable_contract",
+        "examples": [
+          "schemas",
+          "public APIs",
+          "architecture contracts",
+          "skill templates"
+        ],
+        "handling": "Can be reused after checking local version compatibility."
+      },
+      {
+        "name": "live_state",
+        "examples": [
+          "running services",
+          "ports",
+          "tool availability",
+          "current permissions"
+        ],
+        "handling": "Must be verified in the current environment."
+      },
+      {
+        "name": "private_runtime",
+        "examples": [
+          "tokens",
+          "local logs",
+          "user-specific paths",
+          "account data"
+        ],
+        "handling": "Do not publish; sanitize or keep local-only."
+      },
+      {
+        "name": "reusable_lesson",
+        "examples": [
+          "failure modes",
+          "repair patterns",
+          "validation rules",
+          "workflow conventions"
+        ],
+        "handling": "Promote into docs, skills, examples, or contracts when broadly useful."
+      }
+    ]
+  },
+  "tool_catalog": {
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "kb_stats",
+        "purpose": "Summarize markdown files.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "json object",
+        "verification": "non-empty ok flag",
+        "fallback": "manual file listing"
+      },
+      {
+        "name": "kb_search",
+        "purpose": "Search markdown knowledge files.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "matches list",
+        "verification": "query required",
+        "fallback": "text search"
+      },
+      {
+        "name": "architecture_contract",
+        "purpose": "Return architecture contract.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "contract object",
+        "verification": "schema/version present",
+        "fallback": "docs/architecture.md"
+      },
+      {
+        "name": "maintenance_contract",
+        "purpose": "Return maintenance contract.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "contract object",
+        "verification": "snapshot/doctor/validate present",
+        "fallback": "architecture contract"
+      },
+      {
+        "name": "capability_index",
+        "purpose": "Return public capability index.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "sections list",
+        "verification": "sections present",
+        "fallback": "architecture contract"
+      },
+      {
+        "name": "agent_capabilities",
+        "purpose": "Return top-level agent capabilities.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "capabilities list",
+        "verification": "list present",
+        "fallback": "capability index"
+      },
+      {
+        "name": "growth_model",
+        "purpose": "Return reusable growth loop.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "growth model object",
+        "verification": "entrypoints present",
+        "fallback": "docs/architecture.md"
+      },
+      {
+        "name": "agent_primitives",
+        "purpose": "Return reusable agent primitive groups.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "groups list",
+        "verification": "groups present",
+        "fallback": "growth model"
+      },
+      {
+        "name": "tool_knowledge",
+        "purpose": "Return reusable tool and knowledge patterns.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "tool groups and knowledge types",
+        "verification": "tool_groups present",
+        "fallback": "docs/architecture.md"
+      },
+      {
+        "name": "tool_catalog",
+        "purpose": "Return MCP tool catalog.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "tools list",
+        "verification": "tool names present",
+        "fallback": "project_kb_mcp.TOOLS"
+      },
+      {
+        "name": "guardrails_contract",
+        "purpose": "Return public safety guardrails.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "rules list",
+        "verification": "rules present",
+        "fallback": "docs/public-api.md"
+      },
+      {
+        "name": "public_api",
+        "purpose": "Return public API summary.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "stable surfaces and tools",
+        "verification": "stable surfaces present",
+        "fallback": "docs/public-api.md"
+      },
+      {
+        "name": "contract_validate",
+        "purpose": "Validate core public artifacts.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "validation report",
+        "verification": "ok flag",
+        "fallback": "manual schema review"
+      },
+      {
+        "name": "bootstrap_context_pack",
+        "purpose": "Generate a read-only bootstrap context pack.",
+        "safety_level": "read-only",
+        "read_only": true,
+        "output_shape": "markdown or json payload",
+        "verification": "bootstrap schema fields present",
+        "fallback": "manual docs read"
+      }
+    ]
+  },
+  "guardrails": {
+    "version": "1.0.0",
+    "rules": [
+      {
+        "name": "read_only_first",
+        "purpose": "Inspect before mutation.",
+        "action": "Use read-only tools before edits or execution."
+      },
+      {
+        "name": "sanitize_public_outputs",
+        "purpose": "Keep public artifacts safe.",
+        "action": "Remove private paths, tokens, logs, and account data."
+      },
+      {
+        "name": "verify_drift_prone_facts",
+        "purpose": "Avoid stale facts.",
+        "action": "Re-check tool availability, ports, services, versions, and permissions."
+      },
+      {
+        "name": "separate_repair_from_diagnosis",
+        "purpose": "Reduce unsafe automation.",
+        "action": "Keep doctor/snapshot read-only and repair-plan dry-run by default."
+      },
+      {
+        "name": "version_public_contracts",
+        "purpose": "Protect downstream users.",
+        "action": "Bump SemVer when schemas or tool surfaces change."
+      }
+    ]
+  },
+  "validation": {
+    "ok": true,
+    "checks": [
+      {
+        "name": "file:README.md",
+        "ok": true
+      },
+      {
+        "name": "file:VERSION.md",
+        "ok": true
+      },
+      {
+        "name": "file:CHANGELOG.md",
+        "ok": true
+      },
+      {
+        "name": "file:docs/public-api.md",
+        "ok": true
+      },
+      {
+        "name": "file:docs/architecture.md",
+        "ok": true
+      },
+      {
+        "name": "file:docs/architecture.schema.json",
+        "ok": true
+      },
+      {
+        "name": "file:docs/contracts/bootstrap-pack.schema.json",
+        "ok": true
+      },
+      {
+        "name": "file:docs/contracts/tool-catalog.schema.json",
+        "ok": true
+      },
+      {
+        "name": "file:docs/contracts/guardrails.schema.json",
+        "ok": true
+      },
+      {
+        "name": "file:examples/bootstrap-pack.example.json",
+        "ok": true
+      },
+      {
+        "name": "example_json_parse",
+        "ok": true,
+        "error": ""
+      },
+      {
+        "name": "example_has_tool",
+        "ok": true
+      },
+      {
+        "name": "example_has_architecture",
+        "ok": true
+      },
+      {
+        "name": "example_has_tool_knowledge",
+        "ok": true
+      },
+      {
+        "name": "example_sanitized",
+        "ok": true
+      }
+    ]
+  },
+  "agent_capabilities": [
+    "versioned evolution",
+    "sanitized workspace ingestion",
+    "read-only maintenance contracts",
+    "machine-readable capability discovery",
+    "MCP-style tool discovery",
+    "release drafting"
+  ],
+  "config": {},
   "checkpoint_manifest": {
-    "exists": true,
-    "path": "/path/to/workspace/_bridge/shared/checkpoints/MANIFEST.md"
+    "path": "/path/to/workspace\\_bridge\\shared\\checkpoints\\MANIFEST.md",
+    "exists": false,
+    "text": ""
   },
   "recent_checkpoints": [],
   "risk_sections": {
-    "stable": ["project instructions", "checkpoint manifest", "bootstrap schema"],
-    "live_verify": ["tool availability", "service state", "permissions", "current config drift"],
+    "stable": [
+      "project instructions",
+      "checkpoint manifest",
+      "bootstrap schema"
+    ],
+    "live_verify": [
+      "tool availability",
+      "service state",
+      "permissions",
+      "current config drift"
+    ],
     "warnings": []
   }
 }
-

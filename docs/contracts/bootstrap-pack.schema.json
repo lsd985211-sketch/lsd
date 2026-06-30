@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/seed-system/bootstrap-pack.schema.json",
+  "title": "Bootstrap Context Pack",
+  "type": "object",
+  "required": ["ok", "tool", "generated_at", "workspace", "project_id", "depth", "rules", "architecture"],
+  "properties": {
+    "ok": {"type": "boolean"},
+    "tool": {
+      "type": "object",
+      "required": ["name", "version", "schema"],
+      "properties": {
+        "name": {"type": "string"},
+        "version": {"type": "string"},
+        "schema": {"type": "string"}
+      }
+    },
+    "generated_at": {"type": "string"},
+    "workspace": {"type": "string"},
+    "project_id": {"type": "string"},
+    "task": {"type": "string"},
+    "depth": {"type": "string"},
+    "rules": {"type": "object"},
+    "architecture": {"type": "object"},
+    "maintenance": {"type": "object"},
+    "capability_index": {"type": "object"},
+    "growth_model": {"type": "object"},
+    "agent_primitives": {"type": "object"},
+    "tool_knowledge": {"type": "object"}
+  }
+}

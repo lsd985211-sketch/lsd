@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/seed-system/guardrails.schema.json",
+  "title": "Guardrails Contract",
+  "type": "object",
+  "required": ["version", "rules"],
+  "properties": {
+    "version": {"type": "string"},
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "purpose", "action"],
+        "properties": {
+          "name": {"type": "string"},
+          "purpose": {"type": "string"},
+          "action": {"type": "string"}
+        }
+      }
+    }
+  }
+}

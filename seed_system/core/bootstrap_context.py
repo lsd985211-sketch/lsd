@@ -11,7 +11,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-TOOL_VERSION = "0.1.0"
+from .architecture_contract import get_architecture_contract
+from .guardrails import get_guardrails
+from .tool_knowledge import get_tool_knowledge
+from .tool_catalog import get_tool_catalog
+from .validators import validate_public_artifacts
+
+TOOL_VERSION = "1.0.0"
 SENSITIVE_KEY_PARTS = ("token", "secret", "password", "authorization", "api_key", "apikey", "private_key")
 
 
@@ -100,6 +106,23 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
                 "Verify drift-prone state such as ports, services, permissions, and tools before acting.",
             ],
         },
+        "architecture": get_architecture_contract(),
+        "maintenance": get_architecture_contract().get("maintenance_contract", {}),
+        "capability_index": get_architecture_contract().get("capability_index", {}),
+        "growth_model": get_architecture_contract().get("growth_model", {}),
+        "agent_primitives": get_architecture_contract().get("agent_primitives", {}),
+        "tool_knowledge": get_tool_knowledge(),
+        "tool_catalog": get_tool_catalog(),
+        "guardrails": get_guardrails(),
+        "validation": validate_public_artifacts(workspace),
+        "agent_capabilities": [
+            "versioned evolution",
+            "sanitized workspace ingestion",
+            "read-only maintenance contracts",
+            "machine-readable capability discovery",
+            "MCP-style tool discovery",
+            "release drafting",
+        ],
         "config": summarize_config(workspace) if args.depth in {"normal", "deep"} else {},
         "checkpoint_manifest": checkpoint_manifest(workspace),
         "recent_checkpoints": recent_checkpoints(workspace, args.project_id, args.checkpoint_limit, args.snippet_chars),
@@ -115,6 +138,54 @@ def render_markdown(payload: dict[str, Any]) -> str:
     lines = ["# Bootstrap Context Pack", "", f"- tool: `{payload['tool']['name']}` v`{payload['tool']['version']}`", f"- generated_at: `{payload['generated_at']}`", f"- workspace: `{payload['workspace']}`", f"- project_id: `{payload.get('project_id') or 'unspecified'}`", f"- task: {payload.get('task') or 'unspecified'}", f"- depth: `{payload['depth']}`", "", "## First Moves"]
     lines.extend(f"- {item}" for item in payload["rules"]["default_first_moves"])
     lines.extend(["", "## Project Instructions", f"- AGENTS.md exists: `{payload['rules']['agents_md_exists']}`"])
+    architecture = payload.get("architecture") or {}
+    lines.extend(["", "## Public Architecture"])
+    for layer in architecture.get("layers", []):
+        lines.append(f"- {layer['name']}: {layer['purpose']}")
+        lines.extend(f"  - {item}" for item in layer.get("responsibilities", []))
+    shared_rules = architecture.get("shared_rules") or []
+    lines.extend(["", "## Shared Rules"])
+    lines.extend(f"- {rule}" for rule in shared_rules) if shared_rules else lines.append("- none")
+    lines.extend(["", "## Architecture Schema", f"- schema: `{architecture.get('schema')}`", f"- version: `{architecture.get('version')}`"])
+    maintenance = payload.get("maintenance") or {}
+    lines.extend(["", "## Maintenance Contract"])
+    for name, details in maintenance.items():
+        lines.append(f"- {name}: {details.get('purpose')}")
+        lines.append(f"  - mode: {details.get('mode')}")
+        outputs = details.get("outputs") or []
+        lines.extend(f"  - output: {item}" for item in outputs)
+    capability_index = payload.get("capability_index") or {}
+    lines.extend(["", "## Capability Index", f"- purpose: {capability_index.get('purpose')}"])
+    for section in capability_index.get("sections", []):
+        lines.append(f"- {section.get('name')} ({section.get('layer')})")
+        lines.extend(f"  - {entrypoint}" for entrypoint in section.get("entrypoints", []))
+    agent_capabilities = payload.get("agent_capabilities") or []
+    lines.extend(["", "## Agent Capabilities"])
+    lines.extend(f"- {cap}" for cap in agent_capabilities) if agent_capabilities else lines.append("- none")
+    growth_model = payload.get("growth_model") or {}
+    lines.extend(["", "## Growth Model", f"- purpose: {growth_model.get('purpose')}"])
+    lines.extend(["", "### Growth Loop"])
+    for step in growth_model.get("entrypoints", []):
+        lines.append(f"- {step}")
+    targets = growth_model.get("capabilities") or []
+    lines.extend(["", "### Growth Targets"])
+    lines.extend(f"- {target}" for target in targets) if targets else lines.append("- none")
+    agent_primitives = payload.get("agent_primitives") or {}
+    lines.extend(["", "## Agent Primitives", f"- purpose: {agent_primitives.get('purpose')}"])
+    for group in agent_primitives.get("groups", []):
+        lines.append(f"- {group.get('name')}")
+        lines.extend(f"  - {item}" for item in group.get("items", []))
+    tool_knowledge = payload.get("tool_knowledge") or {}
+    lines.extend(["", "## Tool Knowledge", f"- purpose: {tool_knowledge.get('purpose')}"])
+    for group in tool_knowledge.get("tool_groups", []):
+        lines.append(f"- {group.get('name')}")
+        for item in group.get("use_for", []):
+            lines.append(f"  - use_for: {item}")
+        for principle in group.get("principles", []):
+            lines.append(f"  - principle: {principle}")
+    artifacts = architecture.get("canonical_public_artifacts") or []
+    lines.extend(["", "## Canonical Public Artifacts"])
+    lines.extend(f"- `{item}`" for item in artifacts) if artifacts else lines.append("- none")
     manifest = payload.get("checkpoint_manifest") or {}
     lines.extend(["", "## Checkpoint Manifest", f"- exists: `{manifest.get('exists')}`", f"- path: `{manifest.get('path')}`"])
     lines.extend(["", "## Recent Checkpoints"])
