@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "tool": {
+    "name": "seed_system.bootstrap_context",
+    "version": "0.1.0",
+    "schema": "bootstrap-pack-v1"
+  },
+  "generated_at": "2026-06-30T00:00:00+00:00",
+  "workspace": "/path/to/workspace",
+  "project_id": "example-project",
+  "task": "prepare new agent handoff",
+  "depth": "quick",
+  "rules": {
+    "agents_md_exists": true,
+    "default_first_moves": [
+      "Read local project instructions before editing.",
+      "Treat memories and checkpoints as hints until live evidence confirms them."
+    ]
+  },
+  "checkpoint_manifest": {
+    "exists": true,
+    "path": "/path/to/workspace/_bridge/shared/checkpoints/MANIFEST.md"
+  },
+  "recent_checkpoints": [],
+  "risk_sections": {
+    "stable": ["project instructions", "checkpoint manifest", "bootstrap schema"],
+    "live_verify": ["tool availability", "service state", "permissions", "current config drift"],
+    "warnings": []
+  }
+}
