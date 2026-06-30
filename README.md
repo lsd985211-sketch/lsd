@@ -8,17 +8,13 @@ A public, sanitized seed system for reusable Codex/agent bootstrap context packs
 .
 ├── README.md
 ├── VERSION.md
+├── CHANGELOG.md
+├── releases/
 ├── LICENSE
 ├── seed_system/
-│   ├── __init__.py
 │   └── core/
-│       ├── bootstrap_context.py
-│       └── project_kb_mcp.py
 ├── docs/
-│   ├── design.md
-│   └── origin.md
 └── examples/
-    └── bootstrap-pack.example.json
 ```
 
 ## What it does
@@ -29,11 +25,15 @@ A public, sanitized seed system for reusable Codex/agent bootstrap context packs
 
 ## Versioning
 
-This repository follows Semantic Versioning. See [VERSION.md](VERSION.md).
+This repository follows Semantic Versioning. See [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
 
 ## Release notes
 
 GitHub Releases should be used for published versions. Keep release notes concise and user-facing.
+
+## Release structure
+
+Use `releases/<version>.md` for the human-readable release draft before publishing.
 
 ## Quick start
 
