@@ -23,11 +23,10 @@ The seed system gives a new agent session a compact, read-only bootstrap pack fo
 
 ```text
 .
-├── AGENTS.md
-├── .codex/
-│   └── config.toml
-└── _bridge/
-    └── shared/
-        └── checkpoints/
-            └── MANIFEST.md
+├── README.md
+├── VERSION.md
+├── seed_system/
+│   └── core/
+├── docs/
+└── examples/
 ```

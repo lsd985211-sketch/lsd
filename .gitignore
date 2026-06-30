@@ -6,3 +6,4 @@ __pycache__/
 .seed-system/bootstrap/
 .DS_Store
 Thumbs.db
+.backup-before-layout-*/
